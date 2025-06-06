@@ -8,7 +8,7 @@ def timed_step(name, func):
     start = time.time()
     result = func()
     end = time.time()
-    print(f"✅ Finished: {name} in {end - start:.2f} seconds")
+    print(f"Finished: {name} in {end - start:.2f} seconds")
     return result
 
 
@@ -45,7 +45,7 @@ def deduplicate_dataset(input_path, output_path, dedup_column=None, spark_conf=N
             raise ValueError("Output format must be .jsonl or .parquet")
 
     df = timed_step("Step 1: Load input", load_data)
-    print(f"📊 Input dataset count: {df.count():,}")
+    print(f"Input dataset count: {df.count():,}")
 
     dedup_df = timed_step("Step 2: Deduplicate records", deduplicate)
     print(f"📉 Deduplicated dataset count: {dedup_df.count():,}")
