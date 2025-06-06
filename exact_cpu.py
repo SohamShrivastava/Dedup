@@ -22,7 +22,7 @@ def deduplicate_dataset(dataset, method="md5", num_proc=1):
     print("Hashing dataset...")
     dataset = dataset.map(lambda ex: add_hash(ex, method), num_proc=num_proc)
 
-    print("Removing duplicates manually...")
+    print("Removing duplicates...")
     seen_hashes = set()
     def is_unique(example):
         h = example["__hash"]
