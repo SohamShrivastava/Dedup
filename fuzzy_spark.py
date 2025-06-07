@@ -1,13 +1,3 @@
-#!/usr/bin/env python3
-"""
-Spark-based MinHash Text Deduplication Pipeline (Complete Version)
-Author: AI Assistant
-Created: 2025-06-05
-
-A comprehensive pipeline for deduplicating text datasets using MinHash LSH algorithm with Apache Spark.
-Supports multiple input/output formats and provides detailed logging and timing.
-"""
-
 import argparse
 import json
 import logging
