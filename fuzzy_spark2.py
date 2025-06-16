@@ -531,4 +531,4 @@ if __name__ == "__main__":  # pragma: no cover
     log.info(f"Percentage of rows kept:  {FINAL_SIZE / max(0, DATA_SIZE) * 100:.2f}%")
     log.info(f"Output:                   {args.output}")
     log.info(f"Time:                     {time.time() - start_time:.2f}s")
-    log.info("-" * 120)
+    log.info("-" * 120) 
