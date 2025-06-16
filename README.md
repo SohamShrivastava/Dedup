@@ -57,6 +57,44 @@ INFO     After                         : 30662700
 
 No exact duplicates found, in this case we can do a modification that the data is not saved again, as it is same as the input data thus saving us time. 
 ```
+-------------------------------------------------------
+# Script: `exact_spark.py`
+
+## Features
+- Loads `.parquet` or `.jsonl` files using apache spark for faster deduplication
+- Hashes selected column contents
+- Removes **exact duplicates** 
+- Writes deduplicated dataset to disk in `.parquet` format
+
+---
+
+# Usage
+
+```bash
+#input(on a sample dataset with exact duplicates present)
+python exact_spark.py \
+    --input-path "sample_dataset/sample.parquet" \
+    --output-path "sample_dataset/dedup_output_spark.parquet" \
+    --dedup-column "text" \
+    --executor-memory "4g" \
+    --driver-memory "4g" \
+    --executor-cores "1" \
+    --shuffle-partitions "300"
+
+#output
+INFO     Loading                       : 0.41s                                  
+INFO     Processing                    : 0.01s
+INFO     Saving                        : 7.82s
+INFO     Total                         : 14.92s
+INFO     Before                        : 5000000
+INFO     After                         : 2999835
+```
+
+```bash
+add for 250gb code parrot data here
+```
+
+
 
 
 
