@@ -1,4 +1,4 @@
-###Dedup
+### Dedup
 
 # Exact Deduplication (CPU)
 
@@ -17,21 +17,22 @@ This script performs **exact deduplication** over a column (default `text`) of a
 # Usage
 
 ```bash
-python3 /path/to/exact_cpu.py \
-  --input-path "/path/to/input/*.parquet" \
-  --output-path /path/to/output_directory \
-  --format parquet \
-  --column text \
-  --num-proc 10
+#input(on a sample dataset with exact duplicates present)
+python exact_cpu.py \
+    --input-path "sample_dataset/sample.parquet" \
+    --output-path "sample_dataset/dedup_output.parquet" \
+    --format parquet \
+    --column text \
+    --hash-func md5 \
+    --num-proc 4
 
-Stats from a sample run:
-Original: 30,662,700 rows
-Hashing dataset... 
-Map (num_proc=200): 30662700/30662700 [1:15:16, 6788.88 examples/s]
-Removing duplicates... 
-Filter: 30662700/30662700 [21:13 , 24076.81 examples/s]
-Deduplicated: 30,662,700 rows (No exact duplicates found)
-Creating parquet from Arrow format...
-Finished in 8796.27 seconds
+#output
+INFO     Loading                       : 1.57s
+INFO     Processing                    : 40.34s
+INFO     Filtering                     : 17.09s
+INFO     Saving                        : 44.83s
+INFO     Total                         : 103.94s
+INFO     Before                        : 5000000
+INFO     After                         : 2999835
 ``` 
 
