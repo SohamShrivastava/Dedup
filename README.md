@@ -1,6 +1,6 @@
 ### Dedup
 
-# Exact Deduplication (CPU)
+# Exact Deduplication
 
 This script performs **exact deduplication** over a column (default `text`) of a large dataset using parallel hashing and filtering. It is optimized to run with high `--num-proc` values on CPU clusters.
 (To do: Add a pre processing filter which will pre-process text before it is run for deduplication)
@@ -116,6 +116,58 @@ Since data is the same, again no exact duplicates found. Again in this case, can
 #### On 27gb of data speedup is ~7 (104s/14s).
 #### On 250gb of codeparrot data speedup is ~12 (10627/877).
 
+-----
+
+# Fuzzy Deduplication
+
+
+
+# Script: `fuzzy_spark2.py`
+
+## Features
+- Loads `.parquet` data
+- 
+- 
+- Writes deduplicated dataset to disk in `.parquet` format
+
+---
+
+# Usage
+
+```bash
+#input(on 250gb of codeparrot-dataset)
+python3 fuzzy_spark2.py \
+  --input /mnt/CFS2/Codegen/tmp_300/ \
+  --output /mnt/CFS2/Codegen/Dedup/output_files_parquet \
+  --driver_memory 40g \
+  --executor_memory 32g \
+  --executor_cores 6 \
+  --num_executors 6 \
+  --shuffle_partitions 12288 \
+  --default_parallelism 96 \
+  --threshold 0.75 \
+  --ngram_size 3 \
+  --broadcast_threshold 100mb \
+  --memory_fraction 0.8 \
+  --max_result_size 8g \
+  --extra_spark_conf "spark.sql.adaptive.enabled=true" \
+  --extra_spark_conf "spark.sql.adaptive.coalescePartitions.enabled=true" \
+  --extra_spark_conf "spark.sql.adaptive.skewJoin.enabled=true" \
+  --extra_spark_conf "spark.sql.adaptive.advisoryPartitionSizeInBytes=256MB" \
+  --extra_spark_conf "spark.serializer.objectStreamReset=100" \
+  --extra_spark_conf "spark.sql.execution.arrow.maxRecordsPerBatch=20000"
+
+#output
+_main_ - INFO - Input documents:        30,631,486
+_main_ - INFO - Output documents:       20,598,272
+_main_ - INFO - Duplicates removed:     10,033,214
+_main_ - INFO - Deduplication rate:     32.75%
+_main_ - INFO - Documents retained:     67.25%
+_main_ - INFO - Output location:        /mnt/CFS2/Codegen/Dedup/output_files_parquet
+_main_ - INFO - Total processing time:  13357.65s (03:42:37)
+_main_ - INFO - Processing rate:        2293 docs/sec
+
+```
 
 
 
