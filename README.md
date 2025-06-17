@@ -91,9 +91,30 @@ INFO     After                         : 2999835
 ```
 
 ```bash
-add for 250gb code parrot data here
+#input(on around 250gb of codeparrot dataset)
+python3 exact_spark.py \
+    --input-path "/mnt/CFS2/Codegen/tmp_300/" \
+    --output-path "/mnt/CFS2/Codegen/Dedup/output_files_parquet" \
+    --dedup-column "content" \
+    --driver-memory "32g" \
+    --executor-cores "36" \
+    --shuffle-partitions "300"
+
+#output
+INFO     Loading                       : 5.42s
+INFO     Processing                    : 0.01s
+INFO     Saving                        : 622.72s
+INFO     Total                         : 877.40s
+INFO     Before                        : 30662700
+INFO     After                         : 30662700
+Since data is the same, again no exact duplicates found. Again in this case, can save time by not saving the data again.
 ```
 
+---
+
+#### Can see significant speedup using spark configuration as opposed to simply on the CPU.
+#### On 27gb of data speedup is ~7 (104s/14s).
+#### On 250gb of codeparrot data speedup is ~12 (10627/877).
 
 
 
