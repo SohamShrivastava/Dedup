@@ -2,17 +2,7 @@
 
 # Exact Deduplication
 
-This script performs **exact deduplication** over a column (default `text`) of a large dataset using parallel hashing and filtering. It is optimized to run with high `--num-proc` values on CPU clusters.
-(To do: Add a pre processing filter which will pre-process text before it is run for deduplication)
-
 # Script: `exact_cpu.py`
-
-## Features
-- Loads `.parquet` or `.jsonl` files
-- Hashes selected column contents
-- Removes **exact duplicates**
-- Writes deduplicated dataset to disk in `.parquet` format
-
 ---
 
 # Usage
@@ -59,12 +49,6 @@ No exact duplicates found, in this case we can do a modification that the data i
 ```
 -------------------------------------------------------
 # Script: `exact_spark.py`
-
-## Features
-- Loads `.parquet` or `.jsonl` files using apache spark for faster deduplication
-- Hashes selected column contents
-- Removes **exact duplicates** 
-- Writes deduplicated dataset to disk in `.parquet` format
 
 ---
 
@@ -120,17 +104,7 @@ Since data is the same, again no exact duplicates found. Again in this case, can
 
 # Fuzzy Deduplication
 
-
-
 # Script: `fuzzy_spark2.py`
-
-## Features
-- Loads `.parquet` data
-- 
-- 
-- Writes deduplicated dataset to disk in `.parquet` format
-
----
 
 # Usage
 
