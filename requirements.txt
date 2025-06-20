@@ -1,6 +1,25 @@
-datasets>=2.0.0
-pandas>=1.3.0
-pyarrow>=10.0.0
-pyspark>=3.3.0
-pathlib2>=2.3.0; python_version < '3.4'
+# Core dependencies for all scripts
+datasets>=2.14.0
+numpy>=1.21.0
+pandas>=1.5.0
+pathlib2>=2.3.0
 
+# Hash functions
+xxhash>=3.0.0
+
+# Spark dependencies 
+pyspark[sql]>=3.2.0,<3.5.0
+py4j>=0.10.9
+
+# GraphFrames for MinHashLSH connected components
+# Note: This needs to be installed separately via Spark packages
+# pyspark --packages graphframes:graphframes:0.8.2-spark3.2-s_2.12
+
+# Scientific computing for MinHashLSH
+scipy>=1.9.0
+scikit-learn>=1.1.0
+# Logging and utilities
+
+tqdm>=4.64.0
+
+#yet to include for GPU-based deduplication.
