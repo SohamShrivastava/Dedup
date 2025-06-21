@@ -4,11 +4,11 @@ A comprehensive toolkit for exact and fuzzy-deduplication across different scale
 
 ## Table of Contents
 
-- [Acknowledgments](#-acknowledgments)
-- [Installation](#-installation)
-- [Quick Start](#-quick-start)
-- [Scripts Overview](#-scripts-overview)
-- [Usage Examples](#-usage-examples)
+- [Acknowledgments](#acknowledgments)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Scripts Overview](#scripts-overview)
+- [Usage Examples](#usage-examples)
 
 ## Acknowledgements
 
