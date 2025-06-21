@@ -4,10 +4,22 @@ A comprehensive toolkit for exact and fuzzy-deduplication across different scale
 
 ## Table of Contents
 
+- [Acknowledgments](#-acknowledgments)
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
 - [Scripts Overview](#-scripts-overview)
 - [Usage Examples](#-usage-examples)
+
+## Acknowledgements
+
+This repository is heavily inspired by the following methods and code written in the following projects:
+
+- [Text-Dedup](https://github.com/ChenghaoMou/text-dedup)
+- [Nvidia-Nemo Curator](https://github.com/NVIDIA-NeMo/Curator)
+- [Datasketch](https://github.com/ekzhu/datasketch) (MIT)
+- [simhash-py](https://github.com/seomoz/simhash-py/tree/master/simhash) and [simhash-cpp](https://github.com/seomoz/simhash-cpp) (MIT)
+- [Deduplicating Training Data Makes Language Models Better](https://github.com/google-research/deduplicate-text-datasets) (Apache 2.0)
+- [Gaoya](https://github.com/serega/gaoya) (MIT)
 
 ## Installation
 
