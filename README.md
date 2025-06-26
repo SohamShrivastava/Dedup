@@ -115,7 +115,7 @@ For more help on the argument, run the following command
 python fuzzy_spark2.py --help
 ```
 
-**For additional help on the spark configurations used, please refer to spark documentation to get a better idea as to what each configuration caters to.**
+**For additional help on the spark configurations used, please refer to [spark-documentation](#https://spark.apache.org/docs/latest/configuration.html) to get a better idea as to what each configuration caters to.**
 
 ## Usage Examples
 
