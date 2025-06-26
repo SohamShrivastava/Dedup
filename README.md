@@ -243,7 +243,7 @@ _main_ - INFO - Output documents:       20,598,272
 _main_ - INFO - Duplicates removed:     10,033,214
 _main_ - INFO - Deduplication rate:     32.75%
 _main_ - INFO - Documents retained:     67.25%
-_main_ - INFO - Output location:        /mnt/CFS2/Codegen/Dedup/output_files_parquet
+_main_ - INFO - Output location:        output_files_parquet_fuzzy
 _main_ - INFO - Total processing time:  13357.65s (03:42:37)
 _main_ - INFO - Processing rate:        2293 docs/sec
 ```
