@@ -59,6 +59,12 @@ python exact_cpu.py \
     --hash-func md5 \
     --num-proc 4
 ```
+#### Argument Helper:  
+*input-path*: Path to input dataset file or directory(jsonl or parquet)  
+*output-path*: path to output deduplicated dataset  
+*format*: output file format(parquet(default) or jsonl)  
+*column*: which column to be deduplicated from the dataset  
+*hash-func* : which hash function to use(md5(default), sha256)  
 
 ### 2. Spark Exact Deduplication
 
@@ -70,7 +76,18 @@ python exact_spark.py \
     --executor-memory 8g \
     --driver-memory 4g
 ```
+#### Argument Helper:  
+*input-path* : Path to input dataset file or directory(jsonl or parquet)  
+*output-path* : path to output deduplicated dataset   
+*dedup-column* : which column to be deduplicated from the dataset  
+*executor-memory* : the amount of memory to allot to each executor in the spark job
+*driver-memory* : memory to allot to driver in the spark job
 
+For more help on the argument, run the following command
+
+```bash
+python exact_spark.py --help
+```
 ### 3. Spark Fuzzy Deduplication
 
 ```bash
@@ -83,6 +100,22 @@ python fuzzy_spark2.py \
     --executor_memory 32g \
     --num_executors 10
 ```
+#### Argument Helper:  
+*input-path* : Path to input dataset file or directory(jsonl or parquet)  
+*output-path* : path to output deduplicated dataset   
+*threshold* : threshold used to consider deduplicates 
+*column* :  column name to be deduplicated from the dataset  
+*executor-memory* : the amount of memory to allot to each executor in the spark job
+*driver-memory* : memory to allot to driver in the spark job
+*num_executors* : the total number of executors to allot for the job.
+
+For more help on the argument, run the following command
+
+```bash
+python fuzzy_spark2.py --help
+```
+
+**For additional help on the spark configurations used, please refer to spark documentation to get a better idea as to what each configuration caters to.**
 
 ## Usage Examples
 
