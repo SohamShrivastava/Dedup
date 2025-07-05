@@ -3,9 +3,11 @@ datasets>=2.14.0
 numpy>=1.21.0
 pandas>=1.5.0
 pathlib2>=2.3.0
+tqdm>=4.64.0
 
 # Hash functions
 xxhash>=3.0.0
+datasketch>=1.5.3
 
 # Spark dependencies 
 pyspark[sql]>=3.2.0,<3.5.0
@@ -18,8 +20,5 @@ py4j>=0.10.9
 # Scientific computing for MinHashLSH
 scipy>=1.9.0
 scikit-learn>=1.1.0
-# Logging and utilities
-
-tqdm>=4.64.0
 
 #yet to include for GPU-based deduplication.
