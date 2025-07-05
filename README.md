@@ -20,6 +20,9 @@ This repository is heavily inspired by the following methods and code written in
 - [Deduplicating Training Data Makes Language Models Better](https://github.com/google-research/deduplicate-text-datasets) (Apache 2.0)
 - [Gaoya](https://github.com/serega/gaoya) (MIT)
 
+## Contributor Acknowledgement
+This deduplication toolkit was developed in collaboration with [Shreyas Dharmatti](https://github.com/Shreyas-Dharmatti)
+
 ## Installation
 
 ### Prerequisites
