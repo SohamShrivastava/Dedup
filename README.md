@@ -1,3 +1,8 @@
+## Contributor Acknowledgement
+This deduplication toolkit was developed in collaboration with [Shreyas Dharmatti](https://github.com/Shreyas-Dharmatti)
+
+------ 
+
 # Data Deduplication Toolkit
 
 A comprehensive toolkit for exact and fuzzy-deduplication across different scales of data, from small datasets to terabyte-scale processing.
@@ -19,9 +24,6 @@ This repository is heavily inspired by the following methods and code written in
 - [simhash-py](https://github.com/seomoz/simhash-py/tree/master/simhash) and [simhash-cpp](https://github.com/seomoz/simhash-cpp) (MIT)
 - [Deduplicating Training Data Makes Language Models Better](https://github.com/google-research/deduplicate-text-datasets) (Apache 2.0)
 - [Gaoya](https://github.com/serega/gaoya) (MIT)
-
-## Contributor Acknowledgement
-This deduplication toolkit was developed in collaboration with [Shreyas Dharmatti](https://github.com/Shreyas-Dharmatti)
 
 ## Installation
 
