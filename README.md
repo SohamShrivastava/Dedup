@@ -247,3 +247,22 @@ _main_ - INFO - Output location:        output_files_parquet_fuzzy
 _main_ - INFO - Total processing time:  13357.65s (03:42:37)
 _main_ - INFO - Processing rate:        2293 docs/sec
 ```
+-----
+
+## Fuzzy CPU Deduplication
+```bash
+#input(on 250gb of codeparrot-dataset)
+python3 fuzzy_cpu.py \
+        --input /*.parquet \
+        --output test.parquet \
+        --num-cpus 8 \
+        --text-column content
+
+#output
+INFO     Loading                       	: 2752.08s
+INFO     Processing (Signatures)        : 41966s  
+INFO     Filtering  (LSH)               : 452.06s
+INFO     Saving                        	: 960s
+INFO     Total                        	: 43624.01s
+INFO     Before                        	: 30662146
+INFO     After                     		: 22976056
