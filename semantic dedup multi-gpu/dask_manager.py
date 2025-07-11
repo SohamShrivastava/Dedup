@@ -4,7 +4,6 @@ from typing import Optional
 from dask_cuda import LocalCUDACluster
 from distributed import Client
 
-
 class DaskClusterManager:
     def __init__(
         self,

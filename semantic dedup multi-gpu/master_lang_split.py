@@ -662,3 +662,21 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+'''
+usage example 
+
+python master_lang_split.py input.parquet ./sarvam/output_result_0.025 \
+  --data-column text \
+  --lang-column language \
+  --eps 0.2 \
+  --n-clusters 200 \
+  --rmm-pool-size 0.5 \
+  --batch-size 32 \
+  --dedup-batch-size 64 \
+  --max-iter 50 \
+  --model "sarvamai/sarvam-m"
+
+
+'''
