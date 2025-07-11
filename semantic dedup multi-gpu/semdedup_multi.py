@@ -14,7 +14,6 @@ import pandas as pd
 import torch
 from crossfit.backend.cudf.series import create_list_series_from_1d_or_2d_ar
 
-# Constants matching NeMo Curator
 L2_DIST_TO_CENT_COL = "l2_dist_to_cent"  
 COSINE_DIST_TO_CENT_COL = "cosine_dist_to_cent"  
 
@@ -28,11 +27,11 @@ class GPUSemanticDeduplicator:
         which_to_keep: Literal["hard", "easy", "random"] = "hard",
         sim_metric: Literal["cosine", "l2"] = "cosine",
         output_dir: str = "./deduplication_results",
-        batched_cosine_similarity: int = 1024,  # Following NeMo Curator naming
+        batched_cosine_similarity: int = 1024,  
         logger: Optional[logging.Logger] = None,
     ):
         """
-        GPU-accelerated semantic deduplication following NeMo Curator approach.
+        GPU-accelerated semantic deduplication.
         
         Args:
             clustering_results_dir: Directory containing clustering results
@@ -110,7 +109,7 @@ class GPUSemanticDeduplicator:
         self.logger.info(f"Found {len(existing_clusters)} cluster directories")
 
     def _get_array_from_df(self, df: cudf.DataFrame, embedding_col: str) -> cp.ndarray:
-        """Extract embeddings array from DataFrame, following NeMo Curator approach."""
+        """Extract embeddings array from DataFrame"""
         return df[embedding_col].list.leaves.values.reshape(len(df), -1)
 
     def _pairwise_cosine_similarity(
@@ -119,7 +118,7 @@ class GPUSemanticDeduplicator:
         device: Literal["cuda", "cpu"] = "cuda",
     ) -> tuple[cp.ndarray, cp.ndarray]:
         """
-        Compute pairwise cosine similarity between cluster items following NeMo Curator approach.
+        Compute pairwise cosine similarity between cluster items.
         Returns max similarity and corresponding indices for each document.
         """
         # Move to device
@@ -147,10 +146,7 @@ class GPUSemanticDeduplicator:
         device: Literal["cuda", "cpu"] = "cuda", 
         batch_size: int = 1024,
     ) -> tuple[cp.ndarray, cp.ndarray]:
-        """
-        Batched version following NeMo Curator approach.
-        Memory requirements are O(N*B) instead of O(N^2).
-        """
+        
         cluster_reps = cluster_reps.to(device)
         max_similarity = torch.zeros(cluster_reps.shape[0], dtype=torch.float32, device=device)
         max_indices = torch.zeros(cluster_reps.shape[0], dtype=torch.int64, device=device)
@@ -169,7 +165,7 @@ class GPUSemanticDeduplicator:
 
     def _get_semantic_matches_per_cluster(self, cluster_id: int) -> None:
         """
-        Get the semantic matches for a single cluster following NeMo Curator approach.
+        Get the semantic matches for a single cluster.
         Reads cluster embeddings and computes pairwise cosine similarity.
         """
         if self.sim_metric == "cosine":
@@ -225,7 +221,7 @@ class GPUSemanticDeduplicator:
             else:
                 max_similarity, max_indices = self._pairwise_cosine_similarity(cluster_embeddings, "cuda")
             
-            # Create output dataframe following NeMo Curator format
+            # Create output dataframe 
             max_indices_id = ids.iloc[max_indices].reset_index(drop=True)
             points_to_remove_df = cudf.DataFrame(
                 {
@@ -240,7 +236,7 @@ class GPUSemanticDeduplicator:
             self.logger.error(f"Error processing cluster {cluster_id}: {str(e)}")
 
     def compute_semantic_match_dfs(self) -> None:
-        """Compute similarity tables for all clusters following NeMo Curator approach."""
+        """Compute similarity tables for all clusters."""
         if os.path.exists(self.semdedup_pruning_tables_dir):
             self.logger.info(f"Removing existing directory {self.semdedup_pruning_tables_dir}")
             shutil.rmtree(self.semdedup_pruning_tables_dir)
@@ -248,7 +244,7 @@ class GPUSemanticDeduplicator:
         
         t0 = time.time()
         
-        # Process clusters in parallel using Dask, following NeMo Curator approach
+        # Process clusters in parallel using Dask
         tasks = db.from_sequence(list(range(self.n_clusters)), npartitions=self.n_clusters).map(
             lambda cluster_id: self._get_semantic_matches_per_cluster(cluster_id)
         )
@@ -264,7 +260,6 @@ class GPUSemanticDeduplicator:
     ) -> cudf.DataFrame:
         """
         Process data for a single cluster, applying pruning based on epsilon.
-        Following NeMo Curator approach exactly.
         
         Args:
             cluster_id: The specific cluster ID to process
@@ -321,7 +316,6 @@ class GPUSemanticDeduplicator:
         """
         Extract similar records that are within epsilon threshold. 
         These records can be removed from the dataset (duplicates).
-        Following NeMo Curator approach exactly.
         
         Args:
             eps_to_extract: Epsilon threshold for extracting deduplicated data
@@ -342,7 +336,7 @@ class GPUSemanticDeduplicator:
         output_parquet_path = os.path.join(self.output_dir, f"unique_ids_{eps_to_extract}.parquet")
         t0 = time.time()
         
-        # Use Dask to process clusters in parallel following NeMo Curator approach
+        # Use Dask to process clusters in parallel
         results_df = dd.from_map(
             self._prune_single_cluster,
             range(self.n_clusters),
@@ -370,7 +364,7 @@ class GPUSemanticDeduplicator:
         filtered_unique_ids_path: str,
         output_summary_file: str,
     ) -> None:
-        """Write summary file following NeMo Curator approach."""
+        """Write summary file"""
         removed = len(dd.read_parquet(filtered_unique_ids_path))
         total = len(dd.read_parquet(self.emb_by_clust_dir))
         kept = total - removed
@@ -382,11 +376,11 @@ class GPUSemanticDeduplicator:
             "total": [total],
         }
         df = pd.DataFrame(result_dict)
-        df.to_csv(output_summary_file, index=False)
+        #df.to_csv(output_summary_file, index=False)
 
 
 def main():
-    parser = argparse.ArgumentParser(description="GPU-accelerated semantic deduplication following NeMo Curator approach")
+    parser = argparse.ArgumentParser(description="GPU-accelerated semantic deduplication")
     
     # Required arguments
     parser.add_argument("clustering_results_dir", help="Directory containing clustering results")
