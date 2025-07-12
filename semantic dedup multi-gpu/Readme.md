@@ -67,7 +67,7 @@ python master_lang_split.py input.parquet ./output_results \
 Processes entire dataset as single unit:
 
 ```bash
-python master_semdedup.py input.parquet ./output_results \
+python master.py input.parquet ./output_results \
     --data-column text \
     --eps 0.3 \
     --n-clusters 1000 \
