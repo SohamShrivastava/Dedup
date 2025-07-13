@@ -10,10 +10,10 @@ This project evaluates **semantic deduplication** performance across **22 Indic 
    - We collected **100 English Wikipedia documents**.
 
 2. **Paraphrasing**:
-   - The 100 documents were paraphrased using [chatgpt_paraphraser_on_T5_base]("https://huggingface.co/humarin/chatgpt_paraphraser_on_T5_base").
+   - The 100 documents were paraphrased using [chatgpt_paraphraser_on_T5_base](https://huggingface.co/humarin/chatgpt_paraphraser_on_T5_base).
 
 3. **Translation to 22 Indic Languages**:
-   - Each of the 100 original and paraphrased English texts was translated to 22 languages using [sarvamai/sarvam-translate](""https://huggingface.co/sarvamai/sarvam-translate).
+   - Each of the 100 original and paraphrased English texts was translated to 22 languages using [sarvamai/sarvam-translate](https://huggingface.co/sarvamai/sarvam-translate).
 
 4. **Final Structure**:
    - For each language, the original and paraphrased texts were stacked vertically → **200 rows per language**.
@@ -23,11 +23,11 @@ This project evaluates **semantic deduplication** performance across **22 Indic 
 
 The following models were used for semantic embedding and deduplication:
 
-- [qwen2-7b]("https://huggingface.co/Alibaba-NLP/gte-Qwen2-7B-instruct")  
-- [sarvam]("https://huggingface.co/sarvamai/sarvam-m")  
-- [intfloat-multilingual-e5-large-instruct]("https://huggingface.co/intfloat/multilingual-e5-large-instruct")  
-- [Lajavaness/bilingual-embedding-large]("https://huggingface.co/Lajavaness/bilingual-embedding-large")  
-- [solon-embeddings]("https://huggingface.co/OrdalieTech/Solon-embeddings-large-0.1")
+- [qwen2-7b](https://huggingface.co/Alibaba-NLP/gte-Qwen2-7B-instruct)  
+- [sarvam](https://huggingface.co/sarvamai/sarvam-m)  
+- [intfloat-multilingual-e5-large-instruct](https://huggingface.co/intfloat/multilingual-e5-large-instruct)  
+- [Lajavaness/bilingual-embedding-large]("https://huggingface.co/Lajavaness/bilingual-embedding-large)  
+- [`solon-embeddings`](https://huggingface.co/OrdalieTech/Solon-embeddings-large-0.1)
 
 ## Deduplication & Evaluation
 
