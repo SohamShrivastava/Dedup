@@ -1,6 +1,6 @@
 # Multilingual Semantic Deduplication: Evaluation on Wikipedia Paraphrases
 
-## 📄 Overview
+## Overview
 
 This project evaluates **semantic deduplication** performance across **22 Indic languages** using **five multilingual embedding models**. The deduplication pipeline tests each model's ability to correctly detect paraphrased sentence pairs across translated Wikipedia content.
 
