@@ -11,6 +11,8 @@ import time
 from typing import List, Union, Optional, Dict
 import cudf
 import glob
+import dask.dataframe as dd
+import dask_cudf
 
 # Import from your existing files
 from dask_manager import DaskClusterManager
@@ -69,22 +71,106 @@ class SemanticDeduplicationOrchestrator:
         
         return self.scheduler_address
     
-    def split_by_language(self,
-                         input_path: str,
-                         output_directory: str,
-                         data_column: str = "data",
-                         lang_column: str = "lang",
-                         id_column: str = "id") -> Dict[str, str]:
-        """Split input data by language and add sequential IDs"""
+
+    def split_by_language_dask_efficient(self,
+                                        input_path: str,
+                                        output_directory: str,
+                                        data_column: str = "data",
+                                        lang_column: str = "lang",
+                                        id_column: str = "id") -> Dict[str, str]:
+        """Split input data by language using Dask for efficient processing without memory combination"""
         
         print("=" * 60)
-        print("STEP 2: Splitting data by language...")
+        print("STEP 2: Splitting data by language (Dask efficient)...")
         print("=" * 60)
         print(f"Input: {input_path}")
         print(f"Output directory: {output_directory}")
         print(f"Data column: {data_column}")
         print(f"Language column: {lang_column}")
         print(f"ID column: {id_column}")
+        
+        # Create language split directory
+        lang_split_dir = os.path.join(output_directory, "language_splits")
+        os.makedirs(lang_split_dir, exist_ok=True)
+        
+        try:
+            # Read data using Dask (lazy loading - no memory combination)
+            if os.path.isdir(input_path):
+                print(f"   Reading directory with Dask (lazy loading)...")
+                ddf = dask_cudf.read_parquet(input_path)  # Reads all parquet files lazily
+            else:
+                print(f"   Reading single file with Dask...")
+                ddf = dask_cudf.read_parquet(input_path)
+            
+            print(f"   Dataset partitions: {ddf.npartitions}")
+            
+            # Add sequential IDs efficiently using Dask
+            print("   Adding sequential IDs...")
+            ddf = ddf.reset_index(drop=True)
+            
+            # Create a global index across all partitions
+            # This is more memory efficient than materializing everything
+            ddf[id_column] = ddf.index
+            
+            # Get unique languages - more GPU-efficient approach
+            print("   Finding unique languages...")
+            
+            # Option 1: Keep on GPU longer, minimize CPU transfers
+            unique_languages_series = ddf[lang_column].unique().compute()
+            
+            # Convert to host memory only once for iteration
+            unique_languages = unique_languages_series.values_host.tolist()
+            unique_languages = [lang for lang in unique_languages if lang is not None and lang != '']
+            
+            print(f"   Found {len(unique_languages)} unique languages: {unique_languages}")
+            
+            # Process each language separately using GPU-accelerated operations
+            language_files = {}
+            
+            for i, lang in enumerate(unique_languages, 1):
+                print(f"   [{i}/{len(unique_languages)}] Processing language: {lang}")
+                
+                # Filter for this language (GPU operation)
+                lang_df = ddf[ddf[lang_column] == lang]
+                
+                # Count records using GPU (avoid materializing)
+                try:
+                    lang_count = len(lang_df)
+                    print(f"      Records: {lang_count:,}")
+                except:
+                    # Fallback if len() fails on large datasets
+                    print(f"      Processing language: {lang} (count unavailable)")
+                
+                # Define output path
+                output_path = os.path.join(lang_split_dir, f"{lang}.parquet")
+                
+                # Write directly using GPU workers (fully distributed)
+                lang_df.to_parquet(output_path, write_index=False)
+                
+                language_files[lang] = output_path
+                print(f"      ✓ Saved: {output_path}")
+            
+            print(f"✓ Data efficiently split into {len(language_files)} language files using GPU-accelerated Dask")
+            return language_files
+            
+        except Exception as e:
+            print(f"❌ Error in Dask efficient language splitting: {str(e)}")
+            print("🔄 Falling back to cuDF approach...")
+            
+            # Fallback to original approach if Dask fails
+            return self.split_by_language_cudf_fallback(
+                input_path, output_directory, data_column, lang_column, id_column
+            )
+
+    def split_by_language_cudf_fallback(self,
+                                    input_path: str,
+                                    output_directory: str,
+                                    data_column: str = "data",
+                                    lang_column: str = "lang",
+                                    id_column: str = "id") -> Dict[str, str]:
+        """Fallback method using cuDF (original approach)"""
+        
+        print("   Using cuDF fallback approach...")
         
         # Create language split directory
         lang_split_dir = os.path.join(output_directory, "language_splits")
@@ -122,7 +208,8 @@ class SemanticDeduplicationOrchestrator:
             # Single file input - use as is
             input_for_splitting = input_path
         
-        # Split by language
+        # Split by language using the original function
+        from add_id_by_lang import split_by_language_with_ids
         language_files = split_by_language_with_ids(
             input_parquet_path=input_for_splitting,
             output_directory=lang_split_dir,
@@ -131,8 +218,24 @@ class SemanticDeduplicationOrchestrator:
             id_column=id_column
         )
         
-        print(f"✓ Data split into {len(language_files)} language files")
         return language_files
+
+    def split_by_language(self,
+                        input_path: str,
+                        output_directory: str,
+                        data_column: str = "data",
+                        lang_column: str = "lang",
+                        id_column: str = "id") -> Dict[str, str]:
+        """Split input data by language with Dask efficiency and cuDF fallback"""
+        
+        # Always try the Dask efficient approach first
+        return self.split_by_language_dask_efficient(
+            input_path=input_path,
+            output_directory=output_directory,
+            data_column=data_column,
+            lang_column=lang_column,
+            id_column=id_column
+        )
     
     def initialize_embedding_creator(self,
                                    model: str = "intfloat/multilingual-e5-large-instruct",
