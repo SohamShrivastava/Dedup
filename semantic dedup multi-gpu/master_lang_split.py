@@ -1,4 +1,3 @@
-
 """
 Master orchestrator for the complete semantic deduplication pipeline with language splitting.
 This file manages the lifecycle of: Dask cluster → Language Split → For each language: Embedding → Clustering → Deduplication → Removal
@@ -11,6 +10,7 @@ import signal
 import time
 from typing import List, Union, Optional, Dict
 import cudf
+import glob
 
 # Import from your existing files
 from dask_manager import DaskClusterManager
@@ -90,9 +90,41 @@ class SemanticDeduplicationOrchestrator:
         lang_split_dir = os.path.join(output_directory, "language_splits")
         os.makedirs(lang_split_dir, exist_ok=True)
         
+        # Check if input is a directory or single file
+        if os.path.isdir(input_path):
+            print(f"   Input is a directory, reading all parquet files...")
+            # Read all parquet files from directory
+            parquet_files = glob.glob(os.path.join(input_path, "*.parquet"))
+            if not parquet_files:
+                raise ValueError(f"No parquet files found in directory: {input_path}")
+            
+            print(f"   Found {len(parquet_files)} parquet files")
+            
+            # Read and concatenate all parquet files
+            dfs = []
+            for file_path in parquet_files:
+                print(f"   Reading: {os.path.basename(file_path)}")
+                df = cudf.read_parquet(file_path)
+                dfs.append(df)
+            
+            # Concatenate all dataframes
+            combined_df = cudf.concat(dfs, ignore_index=True)
+            print(f"   Combined dataset shape: {combined_df.shape}")
+            
+            # Save combined dataset temporarily
+            temp_combined_path = os.path.join(lang_split_dir, "combined_input.parquet")
+            combined_df.to_parquet(temp_combined_path, index=False)
+            print(f"   Saved combined dataset to: {temp_combined_path}")
+            
+            # Use the combined file for language splitting
+            input_for_splitting = temp_combined_path
+        else:
+            # Single file input - use as is
+            input_for_splitting = input_path
+        
         # Split by language
         language_files = split_by_language_with_ids(
-            input_parquet_path=input_path,
+            input_parquet_path=input_for_splitting,
             output_directory=lang_split_dir,
             data_column=data_column,
             lang_column=lang_column,
