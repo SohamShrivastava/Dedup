@@ -151,12 +151,15 @@ class MinHashGenerator:
             if not dfs:
                 raise ValueError("No valid files found")
             
-            # Concatenate all dataframes
-            df = dask_cudf.concat(dfs, ignore_index=True)
+            # Concatenate all dataframes without resetting index
+            df = dask_cudf.concat(dfs, ignore_index=False)
         
-        # Validate required column exists
+        # Validate required columns exist
         if self.column_field not in df.columns:
             raise ValueError(f"Column field '{self.column_field}' not found in data")
+        
+        if 'id' not in df.columns:
+            raise ValueError("'id' column not found in input data")
         
         return df
     
@@ -177,26 +180,25 @@ class MinHashGenerator:
         df = self._load_data(input_files)
         
         print(f"Computing MinHash signatures...")
-        # Compute minhash signatures for the specified column
-        minhash_signatures = df[self.column_field].map_partitions(
-            self.minhash_method,
-            seeds=self.seeds,
-            char_ngram=self.char_ngram,
-        )
+        # Compute minhash signatures while preserving the original dataframe structure
+        def compute_minhash_for_partition(partition):
+            # Create a copy to avoid modifying original
+            result_partition = partition[['id']].copy()
+            # Compute minhash signatures for this partition
+            minhash_sigs = self.minhash_method(
+                partition[self.column_field], 
+                self.seeds, 
+                self.char_ngram
+            )
+            result_partition["minhash_signature"] = minhash_sigs
+            return result_partition
         
-        # Create result with ID as first column and minhash signatures
-        result = df[[self.column_field]].copy()
-        result["minhash_signature"] = minhash_signatures
-        result = result.reset_index(drop=True)
-        result["id"] = result.index
-        
-        # Keep only id and minhash_signature columns
-        result = result[["id", "minhash_signature"]]
-        
+        result = df.map_partitions(compute_minhash_for_partition, meta={'id': 'object', 'minhash_signature': 'object'})
+                
         print(f"Saving results to {output_path}...")
         # Ensure output directory exists
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        
+
         # Save to Parquet
         result.to_parquet(output_path, write_index=False, overwrite=True)
         

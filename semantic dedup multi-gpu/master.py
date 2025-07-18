@@ -18,7 +18,6 @@ from embedding_multi import EmbeddingCreator
 from clustering_multi import ParquetEmbeddingClusterer
 from semdedup_multi import GPUSemanticDeduplicator
 
-
 def add_id_column(input_parquet_path: str, output_parquet_path: str = None, id_column: str = "id"):
     """
     Add an ID column to a parquet file.
@@ -47,7 +46,6 @@ def add_id_column(input_parquet_path: str, output_parquet_path: str = None, id_c
     df.to_parquet(output_parquet_path, write_index=False)
     print(f"Added '{id_column}' column to {output_parquet_path}")
     return output_parquet_path
-
 
 class SemanticDeduplicationOrchestrator:
     def __init__(self):
