@@ -9,7 +9,7 @@ import hashlib
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
-from clustering import OptimizedClustering
+from clustering_spark import OptimizedClustering
 
 import numpy as np
 import pandas as pd
